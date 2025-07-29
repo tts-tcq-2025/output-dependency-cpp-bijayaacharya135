@@ -36,6 +36,12 @@ namespace WeatherSpace
             return 52;
         }
     };
+class HighPrecipLowWindStub : public IWeatherSensor {
+    int Humidity() const override { return 80; }
+    int Precipitation() const override { return 70; } // >60
+    double TemperatureInC() const override { return 26; }
+    int WindSpeedKMPH() const override { return 40; } // <50
+};
     string Report(const IWeatherSensor& sensor)
     {
         int precipitation = sensor.Precipitation();
@@ -78,4 +84,13 @@ void testWeatherReport() {
     WeatherSpace::TestRainy();
     WeatherSpace::TestHighPrecipitation();
     cout << "All is well (maybe)\n";
+}
+void TestHighPrecipitation()
+{
+    // Use the new stub to expose the bug
+    HighPrecipLowWindStub sensor;
+    string report = Report(sensor);
+    cout << report << endl;
+    // strengthen the assert to expose the bug
+    assert(report.find("rain") != string::npos); // Should mention rain
 }
