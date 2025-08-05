@@ -36,12 +36,12 @@ namespace WeatherSpace
             return 52;
         }
     };
-class HighPrecipLowWindStub : public IWeatherSensor {
-    int Humidity() const override { return 80; }
-    int Precipitation() const override { return 70; } // >60
-    double TemperatureInC() const override { return 26; }
-    int WindSpeedKMPH() const override { return 40; } // <50
-};
+     class HeavyRainStub : public IWeatherSensor {
+        int Humidity() const override { return 85; }
+        int Precipitation() const override { return 70; }   // High rain
+        double TemperatureInC() const override { return 26; }
+        int WindSpeedKMPH() const override { return 30; }   // Low wind
+    };
     string Report(const IWeatherSensor& sensor)
     {
         int precipitation = sensor.Precipitation();
@@ -70,12 +70,11 @@ class HighPrecipLowWindStub : public IWeatherSensor {
     {
         // This instance of stub needs to be different-
         // to give high precipitation (>60) and low wind-speed (<50)
-        SensorStub sensor;
+        HeavyRainStub sensor;
 
-        // strengthen the assert to expose the bug
-        // (function returns Sunny day, it should predict rain)
         string report = Report(sensor);
         assert(report.length() > 0);
+        assert(report.find("Sunny") == string::npos); 
     }
 }
 
@@ -84,13 +83,4 @@ void testWeatherReport() {
     WeatherSpace::TestRainy();
     WeatherSpace::TestHighPrecipitation();
     cout << "All is well (maybe)\n";
-}
-void TestHighPrecipitation()
-{
-    // Use the new stub to expose the bug
-    HighPrecipLowWindStub sensor;
-    string report = Report(sensor);
-    cout << report << endl;
-    // strengthen the assert to expose the bug
-    assert(report.find("rain") != string::npos); // Should mention rain
 }
