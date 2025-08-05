@@ -1,21 +1,46 @@
 #include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
 #include <assert.h>
+#include "misaligned.h"
 
-int printColorMap() {
+struct ColorPair {
+    int index;
+    std::string major;
+    std::string minor;
+};
+
+std::vector<ColorPair> generateColorMap();
+std::string formatColorMapLine(const ColorPair& entry);
+
+std::vector<ColorPair> generateColorMap() {
     const char* majorColor[] = {"White", "Red", "Black", "Yellow", "Violet"};
     const char* minorColor[] = {"Blue", "Orange", "Green", "Brown", "Slate"};
-    int i = 0, j = 0;
-    for(i = 0; i < 5; i++) {
-        for(j = 0; j < 5; j++) {
-            std::cout << i * 5 + j << " | " << majorColor[i] << " | " << minorColor[i] << "\n";
+    std::vector<ColorPair> colorMap;
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            colorMap.push_back({i * 5 + j, majorColor[i], minorColor[i]});
         }
     }
-    return i * j;
+    return colorMap;
 }
 
-void testPrintColorMap() {
-    std::cout << "\nPrint color map test\n"; 
-    int result = printColorMap();
-    assert(result == 25);
-    std::cout << "All is well (maybe!)\n";
+std::string formatColorMapLine(const ColorPair& entry) {
+    std::ostringstream oss;
+    oss << entry.index << " | " << entry.major << " | " << entry.minor;
+    return oss.str();
 }
+void printOnConsole(std::string& lineContent){
+  std::cout<<lineContent;
+}
+int printColorMap(std::function<void(std::string&) printFn)
+{
+    auto colorMap = generateColorMap();  
+    for (ColorPair &entry : colorMap) 
+    {
+        printFn(formatColorMapLine(entry) << "\n");
+    }
+    return colorMap.size();
+}
+
