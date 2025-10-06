@@ -46,3 +46,7 @@ int printColorMap(std::function<void(std::string&)> printFn)
     }
     return colorMap.size();
 }
+void testPrintColorMap() {
+    printColorMap(printOnConsole);
+}
+
