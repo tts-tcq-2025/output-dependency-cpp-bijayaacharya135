@@ -20,7 +20,7 @@ std::vector<ColorPair> generateColorMap() {
     std::vector<ColorPair> colorMap;
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++) {
-            colorMap.push_back({i * 5 + j, majorColor[i], minorColor[i]});
+            colorMap.push_back({i * 5 + j, majorColor[i], minorColor[j]});
         }
     }
     return colorMap;
@@ -31,16 +31,18 @@ std::string formatColorMapLine(const ColorPair& entry) {
     oss << entry.index << " | " << entry.major << " | " << entry.minor;
     return oss.str();
 }
-void printOnConsole(std::string& lineContent){
-  std::cout<<lineContent;
+
+void printOnConsole(std::string& lineContent) {
+    std::cout << lineContent;
 }
-int printColorMap(std::function<void(std::string&) printFn)
+
+int printColorMap(std::function<void(std::string&)> printFn)
 {
     auto colorMap = generateColorMap();  
     for (ColorPair &entry : colorMap) 
     {
-        printFn(formatColorMapLine(entry) << "\n");
+        std::string line = formatColorMapLine(entry) + "\n";
+        printFn(line);
     }
     return colorMap.size();
 }
-
